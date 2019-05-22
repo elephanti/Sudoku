@@ -76,16 +76,13 @@ int is_empty(struct Cell **grid, int row, int col) {
 
 void delete_from_array(int *arr, int index, int arr_length) {
     for (int c = index; c < arr_length - 1; c++) {
-        printf("c=%d\n", c);
         arr[c] = arr[c + 1];
-        printf("arr[%d]=%d", c, arr[c]);
     }
 }
 
 int solve_grid_recursive(struct Cell **grid, int grid_height, int grid_width, int box_height, int box_width, int row,
                          int col) {
     int num;
-    printf("row: %d, col: %d\n", row, col);
 
     if (row == grid_height)
         return TRUE;
@@ -106,16 +103,11 @@ int solve_grid_recursive(struct Cell **grid, int grid_height, int grid_width, in
         int *values = (int *) malloc(9 * sizeof(int));
         int num_of_values = find_valid_values(grid, grid_height, grid_width, box_height, box_width, row, col, values,
                                               9);
-        printf("Valid values: ");
-        for (int i=0; i<num_of_values; i++){
-            printf("%d, ", values[i]);
-        }
 
         while (num_of_values != 0) {
             /* Randomly choose a valid number to try */
             int random_index = rand() % num_of_values;
             num = values[random_index];
-            printf("Trying %d\n", num);
 
             // Check if num is valid value for the current cell
             if (is_valid(grid, grid_height, grid_width, box_height, box_width, row, col, num)) {
@@ -139,23 +131,13 @@ int solve_grid_recursive(struct Cell **grid, int grid_height, int grid_width, in
                 /* No solution found with current num as value in current cell - backtrack */
                 grid[row][col].value = UNASSIGNED;
                 /* Delete the number from possible values */
-                printf("Before valid values for %d, %d: ", row, col);
-                for (int i=0; i<num_of_values; i++){
-                    printf("%d, ", values[i]);
-                }
                 delete_from_array(values, random_index, num_of_values);
                 num_of_values--;
-                printf("After valid values for %d, %d: ", row, col);
-                for (int i=0; i<num_of_values; i++){
-                    printf("%d, ", values[i]);
-                }
-                printf("\n");
             }
         }
 
         /* No solution found for current board - return False (to trigger backtracking) */
         /* TODO: Free values. Need to figure out how cause it looks like it is being freed somehow */
-        printf("Bad: %d %d\n", row, col);
         return FALSE;
     }
 }
