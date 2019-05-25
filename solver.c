@@ -7,13 +7,15 @@
 #include <time.h>
 #include <stdlib.h>
 #include "solver.h"
-
-struct Cell {
-    int value;
-    int is_const;
-} cell;
+#include "mainaux.h"
 
 
+//struct Cell {
+//    int value;
+//   int is_const;
+//} cell;
+
+void print_grid(struct Cell **grid, int grid_height, int grid_width);
 /* Returns a boolean which indicates whether an assigned entry
    in the specified row matches the given number. */
 int used_in_row(struct Cell **grid, int grid_width, int row, int num) {
@@ -146,6 +148,90 @@ int solve_grid(struct Cell **grid, int grid_height, int grid_width, int box_heig
     return solve_grid_recursive(grid, grid_height, grid_width, box_height, box_width, 0, 0);
 }
 
+int is_valid_deterministic(struct Cell **grid, int grid_height, int grid_width, int box_height, int box_width, int row, int col,
+             int num) {
+    //printf("value is:%d and is:",num);
+    //printf("row:%d, col:%d, box: %d \n",used_in_row(grid, grid_width, row, num),used_in_col(grid, grid_height, col, num),used_in_box(grid, row - row % box_height, col - col % box_width, box_height, box_width, num));
+    return !used_in_row(grid, grid_width, row, num) &&
+           !used_in_col(grid, grid_height, col, num) &&
+           !used_in_box(grid, row - row % box_height, col - col % box_width, box_height, box_width, num);
+}
+
+
+int solve_grid_recursive_deterministic(struct Cell **grid, int grid_height, int grid_width, int box_height, int box_width, int row,
+                         int col) 
+{
+    if(row>=grid_height)//went through the whole board and didnt solve he sudoku.
+    {
+        //print_grid(grid,grid_height,grid_width);
+        return FALSE;
+    }
+    if(col>=grid_width)//boundries check
+    {
+        //printf("a");
+        return solve_grid_recursive_deterministic(grid,grid_height,grid_width,box_height,box_width,row+1,0);
+    }
+    // corect solution of a board
+    
+    //MISSING
+     //printf("A");
+    //we are within a legitimate cell.
+    if(grid[row][col].is_const==TRUE)
+    {
+        return solve_grid_recursive_deterministic(grid,grid_height,grid_width,box_height,box_width,row,col+1);
+    }
+    if(grid[row][col].value+1 >= 0 && grid[row][col].value+1<=9)
+    {
+        //printf("B");
+        //checking if placed value is valid
+        if(is_valid_deterministic(grid,grid_height,grid_width,box_height,box_width,row,col,grid[row][col].value+1))
+        {
+            grid[row][col].value++;
+            //printf("C");
+            if((row==grid_height-1)&&(col==grid_width-1))//we solved the sudoku
+            {
+                return TRUE;
+            }  
+            else// we place the value and move to the right.
+            {
+                //if the value is a part of the solution dont keep on backtracking.
+                if(solve_grid_recursive_deterministic(grid,grid_height,grid_width,box_height,box_width,row,col+1))
+                {
+                     return TRUE;
+                }
+                else//# we resummon the solving algorithm from here to place another value and try solving again.
+                {
+                    return solve_grid_recursive_deterministic(grid,grid_height,grid_width,box_height,box_width,row,col);
+                }
+                
+            }
+            
+        }
+        else//# we resummon the solving algorithm from here to place another value and try solving again.
+        {
+            grid[row][col].value++;
+            return solve_grid_recursive_deterministic(grid,grid_height,grid_width,box_height,box_width,row,col);
+        }
+        
+        
+       
+    }
+    else// not a single value of this cell was a part of a solution, this board can not be solved.
+    {
+        grid[row][col].value=UNASSIGNED;
+        //print_grid(grid,grid_height,grid_width);
+        return FALSE;
+    }
+    
+
+
+
+
+
+
+}
+
+
 /* A utility function to print grid  */
 void print_grid(struct Cell **grid, int grid_height, int grid_width) {
     for (int row = 0; row < grid_height; row++) {
@@ -196,7 +282,47 @@ int test() {
 
 }
 
+int test2() {
+    // 0 means unassigned cells
+    int int_grid[GRID_HEIGHT][GRID_WIDTH] = {{0, 0, 0, 0, 0, 0, 0, 0, 0},
+                                             {0, 0, 0, 0, 0, 0, 0, 0, 0},
+                                             {0, 0, 0, 0, 0, 0, 0, 0, 0},
+                                             {0, 0, 0, 0, 0, 0, 0, 0, 0},
+                                             {0, 0, 0, 0, 0, 0, 0, 0, 0},
+                                             {0, 0, 0, 0, 0, 0, 0, 0, 0},
+                                             {0, 0, 0, 0, 0, 0, 0, 0, 0},
+                                             {0, 0, 0, 0, 0, 0, 0, 0, 0},
+                                             {0, 0, 0, 0, 0, 0, 0, 0, 0}};
+
+    struct Cell **grid = (struct Cell **) malloc(GRID_HEIGHT * GRID_WIDTH * sizeof(struct Cell));
+
+    for (int i = 0; i < GRID_HEIGHT; i++)
+        grid[i] = (struct Cell *) malloc(GRID_WIDTH * sizeof(struct Cell));
+
+    for (int i = 0; i < GRID_HEIGHT; i++) {
+        for (int j = 0; j < GRID_WIDTH; j++) {
+            struct Cell cell;
+            cell.value = int_grid[i][j];
+            cell.is_const = FALSE;
+            grid[i][j] = cell;
+        }
+    }
+
+    if (solve_grid_recursive_deterministic(grid, GRID_HEIGHT, GRID_WIDTH, BOX_HEIGHT, BOX_WIDTH,0,0) == TRUE)
+        //print_grid(grid, GRID_HEIGHT, GRID_WIDTH);
+        print_board(grid,GRID_WIDTH,GRID_HEIGHT,BOX_WIDTH,BOX_HEIGHT);
+    else
+        printf("No solution exists");
+
+    for (int i = 0; i < GRID_HEIGHT; i++)
+        free(grid[i]);
+
+    free(grid);
+
+    return 0;
+
+}
 int main() {
     srand(time(NULL));
-    test();
+    test2();
 }
