@@ -269,6 +269,8 @@ int test() {
         free(grid[i]);
 
     free(grid);
+    free(solution);
+
     return 0;
 
 }
