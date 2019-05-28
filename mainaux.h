@@ -30,5 +30,6 @@ void print_invalid_value();
 void print_fixed_cell_error();
 void print_winning_message();
 void print_hint_message(int hint_value);
+struct Cell** create_empty_board(int grid_height, int grid_width);
 
 #endif

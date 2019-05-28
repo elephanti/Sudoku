@@ -249,33 +249,8 @@ int is_game_won(struct Cell **grid, int grid_height, int grid_width) {
 
 int test() {
 
-    struct Cell **grid = (struct Cell **) malloc(GRID_HEIGHT * GRID_WIDTH * sizeof(struct Cell));
-
-    for (int i = 0; i < GRID_HEIGHT; i++)
-        grid[i] = (struct Cell *) malloc(GRID_WIDTH * sizeof(struct Cell));
-
-    for (int i = 0; i < GRID_HEIGHT; i++) {
-        for (int j = 0; j < GRID_WIDTH; j++) {
-            struct Cell cell;
-            cell.value = 0;
-            cell.is_const = FALSE;
-            grid[i][j] = cell;
-        }
-    }
-
-    struct Cell **solution = (struct Cell **) malloc(GRID_HEIGHT * GRID_WIDTH * sizeof(struct Cell));
-
-    for (int i = 0; i < GRID_HEIGHT; i++)
-        solution[i] = (struct Cell *) malloc(GRID_WIDTH * sizeof(struct Cell));
-
-    for (int i = 0; i < GRID_HEIGHT; i++) {
-        for (int j = 0; j < GRID_WIDTH; j++) {
-            struct Cell cell;
-            cell.value = 0;
-            cell.is_const = FALSE;
-            solution[i][j] = cell;
-        }
-    }
+    struct Cell **grid = create_empty_board(GRID_HEIGHT, GRID_WIDTH);
+    struct Cell **solution = create_empty_board(GRID_HEIGHT, GRID_WIDTH);
 
     generate_board(grid, solution, GRID_HEIGHT, GRID_WIDTH, BOX_HEIGHT, BOX_WIDTH, 76);
     printf("Original Solution:\n");

@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <malloc.h>
 #include "mainaux.h"
 
 
@@ -73,10 +74,32 @@ void print_hint_message(int hint_value){
 }
 
 void copy_board(struct Cell **grid1, struct Cell **grid2, int grid_height, int grid_width){
-    for (int i = 0; i < grid_height; i++) {
-        for (int j = 0; j < grid_width; j++) {
+    int i;
+    int j;
+    for (i = 0; i < grid_height; i++) {
+        for (j = 0; j < grid_width; j++) {
             grid2[i][j].value = grid1[i][j].value;
             grid2[i][j].is_const = grid1[i][j].is_const;
         }
     }
+}
+
+struct Cell** create_empty_board(int grid_height, int grid_width){
+    struct Cell **grid = (struct Cell **) malloc(grid_height * grid_width * sizeof(struct Cell));
+    int i;
+    int j;
+
+    for (i = 0; i < grid_height; i++)
+        grid[i] = (struct Cell *) malloc(grid_width * sizeof(struct Cell));
+
+    for (i = 0; i < grid_height; i++) {
+        for (j = 0; j < grid_width; j++) {
+            struct Cell cell;
+            cell.value = UNASSIGNED;
+            cell.is_const = FALSE;
+            grid[i][j] = cell;
+        }
+    }
+
+    return grid;
 }
