@@ -2,55 +2,72 @@
 #include "mainaux.h"
 
 
-void print_board(struct Cell** grid,int grid_width, int grid_height,int box_width, int box_height)
-{
-    int i,j,k, line_length,boxes_amount;
-    boxes_amount=grid_width/box_width;
-    line_length=boxes_amount*(CHARACTERS_IN_CELL*box_width+2)+1;//the ofrmula for lines given by moshe.
-    for(i=0;i<grid_height;i++)
-    {
-        if(i % box_height==0)//printing the horizontal lines
-        {
-            for(k=0;k<line_length;k++)
-            {
+void print_board(struct Cell **grid, int grid_height, int grid_width, int box_height, int box_width) {
+    int i, j, k, line_length, boxes_amount;
+    boxes_amount = grid_width / box_width;
+
+    /* The formule for lines given by moshe. */
+    line_length = boxes_amount * (CHARACTERS_IN_CELL * box_width + 2) + 1;
+
+    for (i = 0; i < grid_height; i++) {
+        /* Printing the horizontal lines */
+
+        if (i % box_height == 0) {
+            for (k = 0; k < line_length; k++) {
                 printf("-");
             }
             printf("\n");
         }
-        for(j=0;j<grid_width;j++)
-        {
-            if(j==0)//the box frame
-            {
+        for (j = 0; j < grid_width; j++) {
+            if (j == 0) {
+                /* the box frame */
                 printf("| ");
-            }
-            else if(j%box_width==0)
-            {
+            } else if (j % box_width == 0) {
                 printf("| ");
             }
 
-            if(grid[i][j].value==UNASSIGNED)
-                printf("   ");
-            else if(grid[i][j].is_const==FALSE)
-            {
-                printf(" %d ",grid[i][j].value);
-            }
-            else//its is a constant value
-            {
-                printf(".%d ",grid[i][j].value);
-            }
-            
+            if (grid[i][j].value == UNASSIGNED)
+                printf(EMPTY_CELL);
 
-            if(j==grid_width-1)//the box frame
-            {
+            else if (grid[i][j].is_const == FALSE) {
+                printf(NORMAL_CELL, grid[i][j].value);
+            } else {
+                /* Its is a constant value */
+                printf(CONST_CELL, grid[i][j].value);
+            }
+
+
+            if (j == grid_width - 1) {
+                /* The box frame */
                 printf("|\n");
             }
 
         }
     }
-    //one last horizontal line.
-     for(k=0;k<line_length;k++)
-    {
+
+    /* One last horizontal line. */
+    for (k = 0; k < line_length; k++) {
         printf("-");
     }
-        printf("\n");
+    printf("\n");
+}
+
+int is_valid_input(int num, int max_num_in_range){
+    return num >= 0 && num <= max_num_in_range;
+}
+
+void print_invalid_value(){
+    printf(INVALID_VALUE_ERROR);
+}
+
+void print_fixed_cell_error(){
+    printf(CELL_IS_FIXED_ERROR);
+}
+
+void print_winning_message(){
+    printf(WIN_MSG);
+}
+
+void print_hint_message(int hint_value){
+    printf(HINT_MSG, hint_value);
 }
