@@ -71,3 +71,12 @@ void print_winning_message(){
 void print_hint_message(int hint_value){
     printf(HINT_MSG, hint_value);
 }
+
+void copy_board(struct Cell **grid1, struct Cell **grid2, int grid_height, int grid_width){
+    for (int i = 0; i < grid_height; i++) {
+        for (int j = 0; j < grid_width; j++) {
+            grid2[i][j].value = grid1[i][j].value;
+            grid2[i][j].is_const = grid1[i][j].is_const;
+        }
+    }
+}
