@@ -138,7 +138,7 @@ int solve_grid(struct Cell **grid, int grid_height, int grid_width, int box_heig
     return solve_grid_recursive(grid, grid_height, grid_width, box_height, box_width, 0, 0);
 }
 
-int solve_grid_recursive_deterministic(struct Cell **grid, int grid_height, int grid_width, int box_height,
+int solve_grid_recursive_deterministic2(struct Cell **grid, int grid_height, int grid_width, int box_height,
                                        int box_width,
                                        int row,
                                        int col) {
@@ -194,6 +194,48 @@ int solve_grid_recursive_deterministic(struct Cell **grid, int grid_height, int 
         return FALSE;
     }
 }
+
+int solve_grid_recursive_deterministic(struct Cell **grid, int grid_height, int grid_width, int box_height,
+                                       int box_width,
+                                       int row,
+                                       int col) {
+    int i;
+    if (row >= grid_height) {
+        /* Went through the whole board and didnt solve the sudoku. */
+        return TRUE;
+    }
+    /* Boundaries check */
+    if (col >= grid_width) {
+        return solve_grid_recursive_deterministic(grid, grid_height, grid_width, box_height, box_width, row + 1, 0);
+    }
+
+    /* Correct solution of a board */
+
+    if (grid[row][col].is_const == TRUE || grid[row][col].value != UNASSIGNED) {
+        /* We are within a legitimate cell. */
+        return solve_grid_recursive_deterministic(grid, grid_height, grid_width, box_height, box_width, row, col + 1);
+    }
+
+    /*maybe width?*/
+    for(i=1;i<=GRID_HEIGHT; i++){
+        if(is_valid(grid,grid_height,grid_width,box_height,box_width,row,col,i)){
+
+        grid[row][col].value=i;
+        
+            if(solve_grid_recursive_deterministic(grid, grid_height, grid_width, box_height, box_width, row, col + 1)){
+                return TRUE;
+            }
+            else{
+                grid[row][col].value=UNASSIGNED;
+            }
+        }
+       
+    }
+    return FALSE;
+}
+
+
+
 
 int generate_board(struct Cell **grid, struct Cell **solution, int grid_height, int grid_width, int box_height,
                    int box_width, int num_of_hints) {
@@ -252,7 +294,35 @@ int test() {
     struct Cell **grid = create_empty_board(GRID_HEIGHT, GRID_WIDTH);
     struct Cell **solution = create_empty_board(GRID_HEIGHT, GRID_WIDTH);
 
-    generate_board(grid, solution, GRID_HEIGHT, GRID_WIDTH, BOX_HEIGHT, BOX_WIDTH, 76);
+    generate_board(grid, solution, GRID_HEIGHT, GRID_WIDTH, BOX_HEIGHT, BOX_WIDTH, 0);
+    printf("Original Solution:\n");
+    print_board(solution, GRID_HEIGHT, GRID_WIDTH, BOX_HEIGHT, BOX_WIDTH);
+    printf("Board to solve:\n");
+    print_board(grid, GRID_HEIGHT, GRID_WIDTH, BOX_HEIGHT, BOX_WIDTH);
+
+    if (solve_grid_recursive_deterministic(grid, GRID_HEIGHT, GRID_WIDTH, BOX_HEIGHT, BOX_WIDTH, 0, 0) == TRUE) {
+        printf("Found solution:\n");
+        print_board(grid, GRID_HEIGHT, GRID_WIDTH, BOX_HEIGHT, BOX_WIDTH);
+    }
+    else
+        printf("No solution exists");
+
+    for (int i = 0; i < GRID_HEIGHT; i++)
+        free(grid[i]);
+
+    free(grid);
+    free(solution);
+
+    return 0;
+
+}
+
+int test2() {
+
+    struct Cell **grid = create_empty_board(GRID_HEIGHT, GRID_WIDTH);
+    struct Cell **solution = create_empty_board(GRID_HEIGHT, GRID_WIDTH);
+
+    //generate_board(grid, solution, GRID_HEIGHT, GRID_WIDTH, BOX_HEIGHT, BOX_WIDTH, 76);
     printf("Original Solution:\n");
     print_board(solution, GRID_HEIGHT, GRID_WIDTH, BOX_HEIGHT, BOX_WIDTH);
     printf("Board to solve:\n");
