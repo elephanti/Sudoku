@@ -57,6 +57,13 @@ int is_valid_input(int num, int max_num_in_range){
     return num >= 0 && num <= max_num_in_range;
 }
 
+void print_validation_failed(){
+    printf(VALIDATION_FAILED);
+}
+void print_validation_passed(){
+    printf(VALIDATION_PASSED);
+}
+
 void print_invalid_value(){
     printf(INVALID_VALUE_ERROR);
 }

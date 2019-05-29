@@ -138,62 +138,6 @@ int solve_grid(struct Cell **grid, int grid_height, int grid_width, int box_heig
     return solve_grid_recursive(grid, grid_height, grid_width, box_height, box_width, 0, 0);
 }
 
-int solve_grid_recursive_deterministic2(struct Cell **grid, int grid_height, int grid_width, int box_height,
-                                       int box_width,
-                                       int row,
-                                       int col) {
-    if (row >= grid_height) {
-        /* Went through the whole board and didnt solve the sudoku. */
-        return TRUE;
-    }
-    /* Boundaries check */
-    if (col >= grid_width) {
-        return solve_grid_recursive_deterministic(grid, grid_height, grid_width, box_height, box_width, row + 1, 0);
-    }
-
-    /* Correct solution of a board */
-
-    if (grid[row][col].is_const == TRUE) {
-        /* We are within a legitimate cell. */
-        return solve_grid_recursive_deterministic(grid, grid_height, grid_width, box_height, box_width, row, col + 1);
-    }
-
-    if (grid[row][col].value + 1 >= 0 && grid[row][col].value + 1 <= 9) {
-        /* Checking if placed value is valid */
-        if (is_valid(grid, grid_height, grid_width, box_height, box_width, row, col,
-                                   grid[row][col].value + 1)) {
-            grid[row][col].value++;
-
-            if ((row == grid_height - 1) && (col == grid_width - 1))//we solved the sudoku
-            {
-                return TRUE;
-            } else {
-                /* We place the value and move to the right. */
-                /* If the value is a part of the solution dont keep on backtracking. */
-                if (solve_grid_recursive_deterministic(grid, grid_height, grid_width, box_height, box_width, row,
-                                                       col + 1)) {
-                    return TRUE;
-                } else {
-                    /* We summon the solving algorithm from here to place another value and try solving again. */
-                    return solve_grid_recursive_deterministic(grid, grid_height, grid_width, box_height, box_width, row,
-                                                              col);
-                }
-
-            }
-
-        } else {
-            /* We summon the solving algorithm from here to place another value and try solving again. */
-            grid[row][col].value++;
-            return solve_grid_recursive_deterministic(grid, grid_height, grid_width, box_height, box_width, row, col);
-        }
-
-
-    } else {
-        /* Not a single value of this cell was a part of a solution, this board can not be solved. */
-        grid[row][col].value = UNASSIGNED;
-        return FALSE;
-    }
-}
 
 int solve_grid_recursive_deterministic(struct Cell **grid, int grid_height, int grid_width, int box_height,
                                        int box_width,

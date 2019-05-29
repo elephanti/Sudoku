@@ -18,6 +18,8 @@
 #define INVALID_VALUE_ERROR "Error: value is invalid\n"
 #define WIN_MSG "Puzzle solved successfully\n"
 #define HINT_MSG "Hint: set cell to %d\n"
+#define VALIDATION_FAILED "Validation failed: board is unsolvable\n"
+#define VALIDATION_PASSED "Validation passed: board is solvable\n"
 
 struct Cell {
     int value;
@@ -30,6 +32,12 @@ void print_invalid_value();
 void print_fixed_cell_error();
 void print_winning_message();
 void print_hint_message(int hint_value);
+void print_validation_failed();
+void print_validation_passed();
 struct Cell** create_empty_board(int grid_height, int grid_width);
+void copy_board(struct Cell **grid1, struct Cell **grid2, int grid_height, int grid_width);
+
+
+
 
 #endif
