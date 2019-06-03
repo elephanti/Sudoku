@@ -6,7 +6,7 @@
 #define MAX_COMMAND_LENGTH 1024
 
 typedef enum Type {
-    invalid_type, set, hint, validate, restart, exit_game
+    invalid_type, set_move, hint_move, validate_move, restart_move, exit_game
 } command_type;
 
 

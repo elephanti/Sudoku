@@ -6,6 +6,9 @@
 #include "mainaux.h"
 #include "solver.h"
 
+#include <stdlib.h>
+#include <stdio.h>
+
 int set(struct Cell **grid, int grid_height, int grid_width, int box_height, int box_width,
         int row, int col, int value){
     if (!is_valid_input(value, GRID_HEIGHT)) {
@@ -44,7 +47,7 @@ int hint(struct Cell **solution, int row, int col) {
 }
 
 int validate(struct Cell **grid, int grid_height, int grid_width, int box_height, int box_width,
-             int row, int col, int value, struct Cell **current_solution) {
+             int row, int col, struct Cell **current_solution) {
 
     int i;
     struct Cell **new_solution = create_empty_board(GRID_HEIGHT, GRID_WIDTH);

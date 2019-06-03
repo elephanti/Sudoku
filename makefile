@@ -1,5 +1,5 @@
 CC = gcc
-OBJS = solver.o mainaux.o parser.o
+OBJS = solver.o mainaux.o parser.o 
 EXEC = solver
 COMP_FLAG = -ansi -Wall -Wextra -Werror -pedantic-errors
 

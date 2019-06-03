@@ -36,7 +36,7 @@ void print_validation_failed();
 void print_validation_passed();
 struct Cell** create_empty_board(int grid_height, int grid_width);
 void copy_board(struct Cell **grid1, struct Cell **grid2, int grid_height, int grid_width);
-
+void empty_board(struct Cell** board_to_empty,int grid_height, int grid_width);
 
 
 

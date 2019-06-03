@@ -19,6 +19,6 @@ int solve_grid_recursive_deterministic(struct Cell **grid, int grid_height, int 
                                        int col);
 
 int is_game_won(struct Cell **grid, int grid_height, int grid_width);
-
+int solve_grid_recursive(struct Cell **grid, int grid_height, int grid_width, int box_height, int box_width, int row,int col);
 
 #endif

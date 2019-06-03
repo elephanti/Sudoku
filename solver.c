@@ -288,8 +288,8 @@ int test2() {
     return 0;
 
 }
-
+/*
 int main() {
     srand(time(NULL));
     test();
-}
+}*/

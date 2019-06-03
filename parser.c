@@ -20,25 +20,26 @@ command parse_command() {
     token = strtok(user_input, " ");
     /* Parsing the command type.*/
     if (strcmp(token, "set") == 0) {
-        received_command.command_chosen = set;
+        received_command.command_chosen = set_move;
         param_amount = 3;
     }
 
     else if (strcmp(token, "hint") == 0) {
-        received_command.command_chosen = hint;
+        received_command.command_chosen = hint_move;
         param_amount = 2;
     }
 
-    else if (strcmp(token, "validate") == 0) {
-        received_command.command_chosen = validate;
+    else if (strcmp(token, "validate\n") == 0) {
+        received_command.command_chosen = validate_move;
         return received_command;
     }
 
-    else if (strcmp(token, "restart") == 0) {
-        received_command.command_chosen = restart;
+    else if (strcmp(token, "restart\n") == 0) {
+        received_command.command_chosen = restart_move;
+        return received_command;
     }
 
-    else if (strcmp(token, "exit") == 0) {
+    else if (strcmp(token, "exit\n") == 0) {
         received_command.command_chosen = exit_game;
         return received_command;
     }

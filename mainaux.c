@@ -110,3 +110,13 @@ struct Cell** create_empty_board(int grid_height, int grid_width){
 
     return grid;
 }
+
+void empty_board(struct Cell** board_to_empty,int grid_height, int grid_width){
+    int i,j;
+    for(i = 0;i < grid_height ; i++){
+        for(j = 0;j < grid_width; j++){
+            board_to_empty[i][j].value=UNASSIGNED;
+            board_to_empty[i][j].is_const=FALSE;
+        }
+    }
+}
