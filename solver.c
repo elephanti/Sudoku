@@ -96,6 +96,11 @@ int solve_grid_recursive(struct Cell **grid, int grid_height, int grid_width, in
     else {
         /* Get all the values that are currently valid for the current cel */
         int *values = (int *) malloc(9 * sizeof(int));
+        /*check if malloc has failed*/
+        if(!values){
+            printf("Error: malloc has failed\n");
+            exit(0);
+        }
         int num_of_values = find_valid_values(grid, grid_height, grid_width, box_height, box_width, row, col, values,
                                               9);
 
