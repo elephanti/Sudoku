@@ -97,8 +97,21 @@ struct Cell **create_empty_board(int grid_height, int grid_width) {
     int i;
     int j;
 
-    for (i = 0; i < grid_height; i++)
+    /*check if malloc failed*/
+    if(!grid){
+        printf("Error: malloc has failed\n");
+        exit(0);
+    }
+    for (i = 0; i < grid_height; i++){
         grid[i] = (struct Cell *) malloc(grid_width * sizeof(struct Cell));
+        /*check if malloc failed*/
+        if(!grid[i]){
+            printf("Error: malloc has failed\n");
+            exit(0);
+        }
+        
+    }
+        
 
     for (i = 0; i < grid_height; i++) {
         for (j = 0; j < grid_width; j++) {
