@@ -6,7 +6,7 @@
 #include <stdio.h>
 
 int set(struct Cell **grid, int grid_height, int grid_width, int box_height, int box_width,
-        int row, int col, int value) {
+        int col, int row, int value) {
     if (!is_valid_input(value, GRID_HEIGHT)) {
         print_invalid_value();
         return -1;
@@ -34,7 +34,7 @@ int set(struct Cell **grid, int grid_height, int grid_width, int box_height, int
 }
 
 
-int hint(struct Cell **solution, int row, int col) {
+int hint(struct Cell **solution, int col, int row) {
     print_hint_message(solution[row][col].value);
 
     return 0;
@@ -45,7 +45,9 @@ int validate(struct Cell **grid, int grid_height, int grid_width, int box_height
     int i;
     struct Cell **new_solution = create_empty_board(GRID_HEIGHT, GRID_WIDTH);
     copy_board(grid, new_solution, grid_height, grid_width);
+
     /*if board is solvable - update the solution*/
+
     if (solve_grid_recursive_deterministic(new_solution, grid_height, grid_width, box_height, box_width, 0, 0) ==
         TRUE) {
         /*free memory allocation for previous solution */
