@@ -1,7 +1,3 @@
-//
-// Created by avital on 22/05/2019.
-//
-
 #include <stdio.h>
 #include <malloc.h>
 #include <time.h>
@@ -10,7 +6,8 @@
 #include "mainaux.h"
 
 int used_in_row(struct Cell **grid, int grid_width, int row, int num) {
-    for (int col = 0; col < grid_width; col++)
+    int col;
+    for (col = 0; col < grid_width; col++)
         if (grid[row][col].value == num)
             return TRUE;
     return FALSE;
@@ -19,7 +16,8 @@ int used_in_row(struct Cell **grid, int grid_width, int row, int num) {
 /* Returns a boolean which indicates whether an assigned entry
    in the specified column matches the given number. */
 int used_in_col(struct Cell **grid, int grid_height, int col, int num) {
-    for (int row = 0; row < grid_height; row++)
+    int row;
+    for (row = 0; row < grid_height; row++)
         if (grid[row][col].value == num)
             return TRUE;
     return FALSE;
@@ -28,8 +26,10 @@ int used_in_col(struct Cell **grid, int grid_height, int col, int num) {
 /* Returns a boolean which indicates whether an assigned entry
    within the specified 3x3 box matches the given number. */
 int used_in_box(struct Cell **grid, int box_start_row, int box_start_col, int box_height, int box_width, int num) {
-    for (int row = 0; row < box_height; row++)
-        for (int col = 0; col < box_width; col++)
+    int row;
+    int col;
+    for (row = 0; row < box_height; row++)
+        for (col = 0; col < box_width; col++)
             if (grid[row + box_start_row][col + box_start_col].value == num)
                 return TRUE;
     return FALSE;
@@ -49,10 +49,11 @@ find_valid_values(struct Cell **grid, int grid_height, int grid_width, int box_h
                   int *values, int range) {
     int num;
     int counter = 0;
+    int i=0;
     for (num = 1; num <= range; num++) {
         if (is_valid(grid, grid_height, grid_width, box_height, box_width, row, col, num)) {
-            values[0] = num;
-            values++;
+            values[i] = num;
+            i++;
             counter++;
         }
     }
@@ -67,7 +68,8 @@ int is_empty(struct Cell **grid, int row, int col) {
 }
 
 void delete_from_array(int *arr, int index, int arr_length) {
-    for (int c = index; c < arr_length - 1; c++) {
+    int c;
+    for (c = index; c < arr_length - 1; c++) {
         arr[c] = arr[c + 1];
     }
 }
@@ -75,6 +77,7 @@ void delete_from_array(int *arr, int index, int arr_length) {
 int solve_grid_recursive(struct Cell **grid, int grid_height, int grid_width, int box_height, int box_width, int row,
                          int col) {
     int num;
+    int random_index;
 
     if (row == grid_height)
         return TRUE;
@@ -97,13 +100,21 @@ int solve_grid_recursive(struct Cell **grid, int grid_height, int grid_width, in
                                               9);
 
         while (num_of_values != 0) {
-            /* Randomly choose a valid number to try */
-            int random_index = rand() % num_of_values;
+            if (num_of_values == 1) {
+                random_index = 0;
+
+            }
+            else {
+                /* Randomly choose a valid number to try */
+                random_index = rand() % num_of_values;
+
+            }
+
             num = values[random_index];
 
-            // Check if num is valid value for the current cell
+            /* Check if num is valid value for the current cell */
             if (is_valid(grid, grid_height, grid_width, box_height, box_width, row, col, num)) {
-                // Fill the cell with the proposed num
+                /* Fill the cell with the proposed num */
                 grid[row][col].value = num;
 
                 if (col + 1 < grid_width) {
@@ -179,42 +190,49 @@ int solve_grid_recursive_deterministic(struct Cell **grid, int grid_height, int 
 }
 
 
-
-
 int generate_board(struct Cell **grid, struct Cell **solution, int grid_height, int grid_width, int box_height,
                    int box_width, int num_of_hints) {
-    int current_empty_cells = 0;
+    int current_hints = 0;
     int row;
     int col;
+    int i;
+    int j;
 
     /* Reset the grid - fill the board with empty values */
-    for (int i = 0; i < grid_height; i++) {
-        for (int j = 0; j < grid_width; j++) {
+    for (i = 0; i < grid_height; i++) {
+        for (j = 0; j < grid_width; j++) {
             grid[i][j].value = UNASSIGNED;
-            grid[i][j].is_const = TRUE;
+            grid[i][j].is_const = FALSE;
         }
     }
 
     /* Populate the board */
     solve_grid(grid, grid_height, grid_width, box_height, box_width);
 
-    for (int i = 0; i < grid_height; i++) {
-        for (int j = 0; j < grid_width; j++) {
+    for (i = 0; i < grid_height; i++) {
+        for (j = 0; j < grid_width; j++) {
             solution[i][j].value = grid[i][j].value;
-            solution[i][j].is_const = TRUE;
+            solution[i][j].is_const = FALSE;
         }
     }
 
     /* Remove cells until only num_of_hints hints are remained */
-    while (current_empty_cells != ((grid_height * grid_width) - num_of_hints)) {
-        row = rand() % grid_height;
-        col = rand() % grid_width;
+    while (current_hints != num_of_hints) {
+        col = rand() % grid_height;
+        row = rand() % grid_width;
 
-        if (grid[row][col].value != UNASSIGNED) {
-            grid[row][col].value = UNASSIGNED;
-            grid[row][col].is_const = FALSE;
-            solution[row][col].is_const = FALSE;
-            current_empty_cells++;
+        if (grid[row][col].is_const == FALSE) {
+            grid[row][col].is_const = TRUE;
+            solution[row][col].is_const = TRUE;
+            current_hints++;
+        }
+    }
+
+    /* Remove non fixed cells */
+    for (i = 0; i < grid_height; i++) {
+        for (j = 0; j < grid_width; j++) {
+            if (grid[i][j].is_const == FALSE)
+                grid[i][j].value = UNASSIGNED;
         }
     }
 
@@ -222,8 +240,10 @@ int generate_board(struct Cell **grid, struct Cell **solution, int grid_height, 
 }
 
 int is_game_won(struct Cell **grid, int grid_height, int grid_width) {
-    for (int i = 0; i < grid_height; i++) {
-        for (int j = 0; j < grid_width; j++) {
+    int i;
+    int j;
+    for (i = 0; i < grid_height; i++) {
+        for (j = 0; j < grid_width; j++) {
             if (grid[i][j].value == UNASSIGNED)
                 return FALSE;
         }
@@ -234,7 +254,7 @@ int is_game_won(struct Cell **grid, int grid_height, int grid_width) {
 
 
 int test() {
-
+    int i;
     struct Cell **grid = create_empty_board(GRID_HEIGHT, GRID_WIDTH);
     struct Cell **solution = create_empty_board(GRID_HEIGHT, GRID_WIDTH);
 
@@ -251,7 +271,7 @@ int test() {
     else
         printf("No solution exists");
 
-    for (int i = 0; i < GRID_HEIGHT; i++)
+    for (i = 0; i < GRID_HEIGHT; i++)
         free(grid[i]);
 
     free(grid);
@@ -262,11 +282,11 @@ int test() {
 }
 
 int test2() {
-
+    int i;
     struct Cell **grid = create_empty_board(GRID_HEIGHT, GRID_WIDTH);
     struct Cell **solution = create_empty_board(GRID_HEIGHT, GRID_WIDTH);
 
-    //generate_board(grid, solution, GRID_HEIGHT, GRID_WIDTH, BOX_HEIGHT, BOX_WIDTH, 76);
+    generate_board(grid, solution, GRID_HEIGHT, GRID_WIDTH, BOX_HEIGHT, BOX_WIDTH, 76);
     printf("Original Solution:\n");
     print_board(solution, GRID_HEIGHT, GRID_WIDTH, BOX_HEIGHT, BOX_WIDTH);
     printf("Board to solve:\n");
@@ -279,7 +299,7 @@ int test2() {
     else
         printf("No solution exists");
 
-    for (int i = 0; i < GRID_HEIGHT; i++)
+    for (i = 0; i < GRID_HEIGHT; i++)
         free(grid[i]);
 
     free(grid);

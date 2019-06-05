@@ -1,7 +1,3 @@
-//
-// Created by avital on 28/05/2019.
-//
-
 #include "game.h"
 #include "mainaux.h"
 #include "solver.h"
@@ -10,7 +6,7 @@
 #include <stdio.h>
 
 int set(struct Cell **grid, int grid_height, int grid_width, int box_height, int box_width,
-        int row, int col, int value){
+        int row, int col, int value) {
     if (!is_valid_input(value, GRID_HEIGHT)) {
         print_invalid_value();
         return -1;
@@ -21,14 +17,12 @@ int set(struct Cell **grid, int grid_height, int grid_width, int box_height, int
         return -1;
     }
 
-    if (!is_valid(grid, grid_height, grid_width, box_height, box_width, row, col, value))
-    {
+    if (!is_valid(grid, grid_height, grid_width, box_height, box_width, row, col, value)) {
         print_invalid_value();
         return -1;
     }
 
     grid[row][col].value = value;
-    print_board(grid, grid_height, grid_width, box_height, box_width);
 
     if (is_game_won(grid, grid_height, grid_width)) {
         print_winning_message();
@@ -47,22 +41,23 @@ int hint(struct Cell **solution, int row, int col) {
 }
 
 int validate(struct Cell **grid, int grid_height, int grid_width, int box_height, int box_width,
-             int row, int col, struct Cell **current_solution) {
-
+             struct Cell **current_solution) {
     int i;
     struct Cell **new_solution = create_empty_board(GRID_HEIGHT, GRID_WIDTH);
-    copy_board(grid,new_solution,grid_height,grid_width);
+    copy_board(grid, new_solution, grid_height, grid_width);
     /*if board is solvable - update the solution*/
-    if(solve_grid_recursive_deterministic(new_solution,grid_height,grid_width,box_height,box_width,0,0)==TRUE){
+    if (solve_grid_recursive_deterministic(new_solution, grid_height, grid_width, box_height, box_width, 0, 0) ==
+        TRUE) {
         /*free memory allocation for previous solution */
-        for(i=0; i < grid_height; i++){
+        for (i = 0; i < grid_height; i++) {
             free(current_solution[i]);
         }
         free(current_solution);
-        current_solution=new_solution;
+        current_solution = new_solution;
         print_validation_passed();
+        return TRUE;
 
-    }else{
+    } else {
         print_validation_failed();
         return FALSE;
     }

@@ -1,89 +1,98 @@
 /*created by Yair on 3.6.19*/
+#include "parser.h"
 #include "game.h"
 #include "mainaux.h"
 #include "solver.h"
-#include "parser.h"
 
 #include <stdlib.h>
 #include <stdio.h>
-#define WRONG_VALUE -1
-#define SUCCESS 1
 
-int main(int argc, char *argv[]){
+
+int main(int argc, char *argv[]) {
     struct Cell **board, **board_solution;
     int num_of_hints;
-    command user_input;
+    int seed;
+    int i;
     int valid_command;
-    /*SCAN SEED HERE*/
-    /*scanning user input*/
-    printf("Please enter the number of cells to fill [0-80]:\n");
-    scanf("%d%*c",&num_of_hints);
-    
-    while(num_of_hints < 0 || num_of_hints > 80){
-        printf("Error: invalid number of cells to fill (should be between 0 and 80)\n");
-        printf("Please enter the number of cells to fill [0-80]:\n");
-        scanf("%d%*c",&num_of_hints);
+    int has_won;
+    command user_input;
+
+    if (argc != 2) {
+        printf("ERROR: Seed was not passed! Exiting.");
+        return -1;
     }
 
-    /*initalizing the game*/
-    board = create_empty_board(GRID_HEIGHT,GRID_WIDTH);
-    board_solution = create_empty_board(GRID_HEIGHT,GRID_WIDTH);
+    seed = atoi(argv[1]);
+    srand(seed);
 
-    generate_board(board,board_solution,GRID_HEIGHT,GRID_WIDTH,BOX_HEIGHT,BOX_WIDTH,num_of_hints);
-    valid_command=TRUE;
+    get_cells_number_input(&num_of_hints);
+
+    /* Initializing the game */
+    board = create_empty_board(GRID_HEIGHT, GRID_WIDTH);
+    board_solution = create_empty_board(GRID_HEIGHT, GRID_WIDTH);
+
+    generate_board(board, board_solution, GRID_HEIGHT, GRID_WIDTH, BOX_HEIGHT, BOX_WIDTH, num_of_hints);
+    print_board(board, GRID_WIDTH, GRID_HEIGHT, BOX_WIDTH, BOX_HEIGHT);
 
     /*game begin*/
-    while(!is_game_won(board,GRID_HEIGHT,GRID_WIDTH)){
+    while (TRUE) {
+        valid_command = TRUE;
+        has_won = is_game_won(board, GRID_HEIGHT, GRID_WIDTH);
 
-        if(valid_command){
-            /*print the baord only if the last command was a valid one.*/
-            print_board(board,GRID_WIDTH,GRID_HEIGHT,BOX_WIDTH,BOX_HEIGHT);
-        }
-        
         user_input = parse_command();
-        /*acting accordingly to command*/
-        if(user_input.command_chosen==invalid_type){
-            printf("Error: invalid command\n");
-        }else if(user_input.command_chosen==set_move){
-            //check for right row,col position
-            if(set(board, GRID_HEIGHT, GRID_WIDTH, BOX_HEIGHT, BOX_WIDTH
-                    ,user_input.params[0]-1, user_input.params[1]-1, user_input.params[2])<0){
 
-                valid_command=FALSE;
-            }else{
-                valid_command=TRUE;
-                //keep checking if keeping the game or the dude won
+        if (has_won && user_input.command_chosen != restart_move && user_input.command_chosen != exit_game){
+            printf(INVALID_COMMAND_ERROR);
+            valid_command = FALSE;
+            continue;
+        }
+
+        if (user_input.command_chosen == set_move) {
+            /* check for right row,col position */
+            if (set(board, GRID_HEIGHT, GRID_WIDTH, BOX_HEIGHT, BOX_WIDTH, user_input.params[0] - 1,
+                    user_input.params[1] - 1, user_input.params[2]) < 0) {
+
+                valid_command = FALSE;
+            } else {
+                valid_command = TRUE;
+                /* keep checking if keeping the game or the dude won */
             }
 
-        }else if(user_input.command_chosen==hint_move){
-            hint(board_solution,user_input.params[0]-1,user_input.params[1]);
-        }else if(user_input.command_chosen==validate_move){
-            validate(board,GRID_HEIGHT,GRID_WIDTH,BOX_HEIGHT,BOX_WIDTH,user_input.params[0]-1,user_input.params[1],board_solution);
-        }else if(user_input.command_chosen==restart_move){
-            //emptying the board
-            empty_board(board,GRID_HEIGHT,GRID_WIDTH);
-            empty_board(board_solution,GRID_HEIGHT,GRID_WIDTH);
+        } else if (user_input.command_chosen == hint_move) {
+            hint(board_solution, user_input.params[0] - 1, user_input.params[1]);
+        } else if (user_input.command_chosen == validate_move) {
+            validate(board, GRID_HEIGHT, GRID_WIDTH, BOX_HEIGHT, BOX_WIDTH, board_solution);
+        } else if (user_input.command_chosen == restart_move) {
+            /* emptying the board */
+            empty_board(board, GRID_HEIGHT, GRID_WIDTH);
+            empty_board(board_solution, GRID_HEIGHT, GRID_WIDTH);
 
-            /*scanning user input*/
-            printf("Please enter the number of cells to fill [0-80]:\n");
-            scanf("%d%*c",&num_of_hints);
-    
-            while(num_of_hints < 0 || num_of_hints > 80){
-                printf("Error: invalid number of cells to fill (should be between 0 and 80)\n");
-                printf("Please enter the number of cells to fill [0-80]:\n");
-                scanf("%d%*c",&num_of_hints);
-            }
-            generate_board(board,board_solution,GRID_HEIGHT,GRID_WIDTH,BOX_HEIGHT,BOX_WIDTH,num_of_hints);
-            
-        }else if(user_input.command_chosen==exit_game){
+            get_cells_number_input(&num_of_hints);
+            generate_board(board, board_solution, GRID_HEIGHT, GRID_WIDTH, BOX_HEIGHT, BOX_WIDTH, num_of_hints);
+
+        } else if (user_input.command_chosen == exit_game) {
+            for (i = 0; i < GRID_HEIGHT; i++)
+                free(board[i]);
+
+            for (i = 0; i < GRID_HEIGHT; i++)
+                free(board_solution[i]);
+
             free(board);
             free(board_solution);
-            printf("Exiting...\n");
+            printf(EXIT_MSG);
             return SUCCESS;
         }
+
+        else {
+            printf(INVALID_COMMAND_ERROR);
+            valid_command = FALSE;
+        }
+
+        if (valid_command) {
+            /* Print the board only if the last command was a valid one. */
+            print_board(board, GRID_WIDTH, GRID_HEIGHT, BOX_WIDTH, BOX_HEIGHT);
+        }
+
     }
-
-
-
 
 }

@@ -1,7 +1,3 @@
-//
-// Created by avital on 22/05/2019.
-//
-
 #include "mainaux.h"
 
 #ifndef SUDOKU_SOLVER_H

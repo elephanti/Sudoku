@@ -4,6 +4,7 @@
 #include <string.h>
 
 #include "parser.h"
+#include "mainaux.h"
 
 
 /* A command that receives an input and returns a command struct
@@ -17,34 +18,43 @@ command parse_command() {
     /* User input as a whole row. */
     fgets(user_input, MAX_COMMAND_LENGTH, stdin);
 
+    /* Reached EOF - Exit! */
+    if (feof(stdin)) {
+        printf(EXIT_MSG);
+        exit(-1);
+    }
+
+    while (strcmp(user_input, "\n") == 0) {
+        /* User input as a whole row. */
+        fgets(user_input, MAX_COMMAND_LENGTH, stdin);
+
+        /* Reached EOF - Exit! */
+        if (feof(stdin)) {
+            printf(EXIT_MSG);
+            exit(-1);
+        }
+    }
+
     token = strtok(user_input, " ");
+
+
     /* Parsing the command type.*/
     if (strcmp(token, "set") == 0) {
         received_command.command_chosen = set_move;
         param_amount = 3;
-    }
-
-    else if (strcmp(token, "hint") == 0) {
+    } else if (strcmp(token, "hint") == 0) {
         received_command.command_chosen = hint_move;
         param_amount = 2;
-    }
-
-    else if (strcmp(token, "validate\n") == 0) {
+    } else if (strcmp(token, "validate\n") == 0) {
         received_command.command_chosen = validate_move;
         return received_command;
-    }
-
-    else if (strcmp(token, "restart\n") == 0) {
+    } else if (strcmp(token, "restart\n") == 0) {
         received_command.command_chosen = restart_move;
         return received_command;
-    }
-
-    else if (strcmp(token, "exit\n") == 0) {
+    } else if (strcmp(token, "exit\n") == 0) {
         received_command.command_chosen = exit_game;
         return received_command;
-    }
-    else
-    {
+    } else {
         /* Not a command! */
         received_command.command_chosen = invalid_type;
         return received_command;

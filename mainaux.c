@@ -53,34 +53,35 @@ void print_board(struct Cell **grid, int grid_height, int grid_width, int box_he
     printf("\n");
 }
 
-int is_valid_input(int num, int max_num_in_range){
+int is_valid_input(int num, int max_num_in_range) {
     return num >= 0 && num <= max_num_in_range;
 }
 
-void print_validation_failed(){
+void print_validation_failed() {
     printf(VALIDATION_FAILED);
 }
-void print_validation_passed(){
+
+void print_validation_passed() {
     printf(VALIDATION_PASSED);
 }
 
-void print_invalid_value(){
+void print_invalid_value() {
     printf(INVALID_VALUE_ERROR);
 }
 
-void print_fixed_cell_error(){
+void print_fixed_cell_error() {
     printf(CELL_IS_FIXED_ERROR);
 }
 
-void print_winning_message(){
+void print_winning_message() {
     printf(WIN_MSG);
 }
 
-void print_hint_message(int hint_value){
+void print_hint_message(int hint_value) {
     printf(HINT_MSG, hint_value);
 }
 
-void copy_board(struct Cell **grid1, struct Cell **grid2, int grid_height, int grid_width){
+void copy_board(struct Cell **grid1, struct Cell **grid2, int grid_height, int grid_width) {
     int i;
     int j;
     for (i = 0; i < grid_height; i++) {
@@ -91,7 +92,7 @@ void copy_board(struct Cell **grid1, struct Cell **grid2, int grid_height, int g
     }
 }
 
-struct Cell** create_empty_board(int grid_height, int grid_width){
+struct Cell **create_empty_board(int grid_height, int grid_width) {
     struct Cell **grid = (struct Cell **) malloc(grid_height * grid_width * sizeof(struct Cell));
     int i;
     int j;
@@ -111,12 +112,24 @@ struct Cell** create_empty_board(int grid_height, int grid_width){
     return grid;
 }
 
-void empty_board(struct Cell** board_to_empty,int grid_height, int grid_width){
-    int i,j;
-    for(i = 0;i < grid_height ; i++){
-        for(j = 0;j < grid_width; j++){
-            board_to_empty[i][j].value=UNASSIGNED;
-            board_to_empty[i][j].is_const=FALSE;
+void empty_board(struct Cell **board_to_empty, int grid_height, int grid_width) {
+    int i, j;
+    for (i = 0; i < grid_height; i++) {
+        for (j = 0; j < grid_width; j++) {
+            board_to_empty[i][j].value = UNASSIGNED;
+            board_to_empty[i][j].is_const = FALSE;
         }
+    }
+}
+
+void get_cells_number_input(int* num_of_hints){
+    /* Scanning user input */
+    printf(NUMBER_OF_CELLS_TO_FILL_MSG);
+    scanf("%d%*c", num_of_hints);
+
+    while (*num_of_hints < 0 || *num_of_hints > 80) {
+        printf(INVALID_NUMBER_OF_CELLS_TO_FILL);
+        printf(NUMBER_OF_CELLS_TO_FILL_MSG);
+        scanf("%d%*c", num_of_hints);
     }
 }
