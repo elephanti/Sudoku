@@ -39,9 +39,11 @@ int used_in_box(struct Cell **grid, int box_start_row, int box_start_col, int bo
    num to the given row,col location. */
 int is_valid(struct Cell **grid, int grid_height, int grid_width, int box_height, int box_width, int row, int col,
              int num) {
-    return !used_in_row(grid, grid_width, row, col, num) &&
-           !used_in_col(grid, grid_height, row, col, num) &&
-           !used_in_box(grid, row - row % box_height, col - col % box_width, box_height, box_width, row, col, num);
+    if (num != UNASSIGNED)
+        return !used_in_row(grid, grid_width, row, col, num) &&
+               !used_in_col(grid, grid_height, row, col, num) &&
+               !used_in_box(grid, row - row % box_height, col - col % box_width, box_height, box_width, row, col, num);
+    return TRUE;
 }
 
 int
@@ -78,6 +80,7 @@ int solve_grid_recursive(struct Cell **grid, int grid_height, int grid_width, in
                          int col) {
     int num;
     int random_index;
+    int num_of_values;
 
     if (row == grid_height)
         return TRUE;
@@ -101,7 +104,7 @@ int solve_grid_recursive(struct Cell **grid, int grid_height, int grid_width, in
             printf("Error: malloc has failed\n");
             exit(0);
         }
-        int num_of_values = find_valid_values(grid, grid_height, grid_width, box_height, box_width, row, col, values,
+        num_of_values = find_valid_values(grid, grid_height, grid_width, box_height, box_width, row, col, values,
                                               9);
 
         while (num_of_values != 0) {

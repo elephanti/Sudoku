@@ -50,12 +50,13 @@ int validate(struct Cell **grid, int grid_height, int grid_width, int box_height
 
     if (solve_grid_recursive_deterministic(new_solution, grid_height, grid_width, box_height, box_width, 0, 0) ==
         TRUE) {
+        copy_board(new_solution, current_solution, grid_height, grid_width);
+
         /*free memory allocation for previous solution */
         for (i = 0; i < grid_height; i++) {
-            free(current_solution[i]);
+            free(new_solution[i]);
         }
-        free(current_solution);
-        current_solution = new_solution;
+        free(new_solution);
         print_validation_passed();
         return TRUE;
 
