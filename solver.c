@@ -5,32 +5,32 @@
 #include "solver.h"
 #include "mainaux.h"
 
-int used_in_row(struct Cell **grid, int grid_width, int row, int num) {
+int used_in_row(struct Cell **grid, int grid_width, int row, int current_col, int num) {
     int col;
     for (col = 0; col < grid_width; col++)
-        if (grid[row][col].value == num)
+        if (current_col != col && grid[row][col].value == num)
             return TRUE;
     return FALSE;
 }
 
 /* Returns a boolean which indicates whether an assigned entry
    in the specified column matches the given number. */
-int used_in_col(struct Cell **grid, int grid_height, int col, int num) {
+int used_in_col(struct Cell **grid, int grid_height, int current_row, int col, int num) {
     int row;
     for (row = 0; row < grid_height; row++)
-        if (grid[row][col].value == num)
+        if (current_row != row && grid[row][col].value == num)
             return TRUE;
     return FALSE;
 }
 
 /* Returns a boolean which indicates whether an assigned entry
    within the specified 3x3 box matches the given number. */
-int used_in_box(struct Cell **grid, int box_start_row, int box_start_col, int box_height, int box_width, int num) {
+int used_in_box(struct Cell **grid, int box_start_row, int box_start_col, int box_height, int box_width, int current_row, int current_col, int num) {
     int row;
     int col;
     for (row = 0; row < box_height; row++)
         for (col = 0; col < box_width; col++)
-            if (grid[row + box_start_row][col + box_start_col].value == num)
+            if (!(current_row == row && current_col == col) && grid[row + box_start_row][col + box_start_col].value == num)
                 return TRUE;
     return FALSE;
 }
@@ -39,9 +39,9 @@ int used_in_box(struct Cell **grid, int box_start_row, int box_start_col, int bo
    num to the given row,col location. */
 int is_valid(struct Cell **grid, int grid_height, int grid_width, int box_height, int box_width, int row, int col,
              int num) {
-    return !used_in_row(grid, grid_width, row, num) &&
-           !used_in_col(grid, grid_height, col, num) &&
-           !used_in_box(grid, row - row % box_height, col - col % box_width, box_height, box_width, num);
+    return !used_in_row(grid, grid_width, row, col, num) &&
+           !used_in_col(grid, grid_height, row, col, num) &&
+           !used_in_box(grid, row - row % box_height, col - col % box_width, box_height, box_width, row, col, num);
 }
 
 int
