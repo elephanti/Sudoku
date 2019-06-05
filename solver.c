@@ -78,7 +78,7 @@ int solve_grid_recursive(struct Cell **grid, int grid_height, int grid_width, in
                          int col) {
     int num;
     int random_index;
-
+    int num_of_values;
     if (row == grid_height)
         return TRUE;
 
@@ -101,7 +101,7 @@ int solve_grid_recursive(struct Cell **grid, int grid_height, int grid_width, in
             printf("Error: malloc has failed\n");
             exit(0);
         }
-        int num_of_values = find_valid_values(grid, grid_height, grid_width, box_height, box_width, row, col, values,
+        num_of_values = find_valid_values(grid, grid_height, grid_width, box_height, box_width, row, col, values,
                                               9);
 
         while (num_of_values != 0) {

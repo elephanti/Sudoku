@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <malloc.h>
 #include "mainaux.h"
-
+#include <stdlib.h>
 
 void print_board(struct Cell **grid, int grid_height, int grid_width, int box_height, int box_width) {
     int i, j, k, line_length, boxes_amount;
