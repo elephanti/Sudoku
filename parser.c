@@ -10,7 +10,7 @@
 /* A command that receives an input and returns a command struct
 containing the parsed command from the user.*/
 command parse_command() {
-    char user_input[MAX_COMMAND_LENGTH + 1];
+    char user_input[MAX_COMMAND_LENGTH];
     char *token;
     command received_command;
     int param_amount;
