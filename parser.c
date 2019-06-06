@@ -6,36 +6,11 @@
 #include "parser.h"
 #include "mainaux.h"
 
-/*A command the recieves an input and checks if it is a restart command*/
-command check_if_restart(char *token){
-    char restart_command[]="restart";
-    command return_val;
-    unsigned int i;
-    
-    if(strlen(token>7)){
-        for(i=0;i<strlen(restart_command);i++){
-            if(token[i]!=restart_command[i]){
-                return_val.command_chosen=invalid_type;
-                return return_val;
-            }
-        }
-        return_val.command_chosen=restart_move;
-        return return_val;
-    }
-    return_val.command_chosen=invalid_type;
-    return return_val;
-    
-    
-}
-
-command check_if_set(char *token){
-
-}
 
 /* A command that receives an input and returns a command struct
 containing the parsed command from the user.*/
 command parse_command() {
-    char user_input[MAX_COMMAND_LENGTH];
+    char user_input[MAX_COMMAND_LENGTH + 1];
     char *token;
     command received_command;
     int param_amount;
@@ -45,16 +20,9 @@ command parse_command() {
 
     /* Reached EOF - Exit! */
     if (feof(stdin)) {
-        /*printf("entered feof with string:%s\n",user_input);*/
-        received_command=check_if_restart(user_input);
-        if(received_command.command_chosen==restart_move){
-            return received_command;
-        }
         printf(EXIT_MSG);
         exit(-1);
-        
     }
-    
 
     while (strcmp(user_input, "\n") == 0) {
         /* User input as a whole row. */
@@ -62,16 +30,12 @@ command parse_command() {
 
         /* Reached EOF - Exit! */
         if (feof(stdin)) {
-            /*printf("entered feof");*/
             printf(EXIT_MSG);
             exit(-1);
         }
     }
-    
+
     token = strtok(user_input, " ");
-    
-    
-    
 
     /* Parsing the command type.*/
     if (strcmp(token, "set") == 0) {
@@ -83,9 +47,8 @@ command parse_command() {
     } else if (strcmp(token, "validate\n") == 0) {
         received_command.command_chosen = validate_move;
         return received_command;
-    } else if (strcmp(token, "restart\n") == 0 ) {
+    } else if (strcmp(token, "restart\n") == 0) {
         received_command.command_chosen = restart_move;
-        /*printf("chose restart \n");*/
         return received_command;
     } else if (strcmp(token, "exit\n") == 0) {
         received_command.command_chosen = exit_game;
@@ -93,10 +56,7 @@ command parse_command() {
     } else {
         /* Not a command! */
         received_command.command_chosen = invalid_type;
-        /*printf("the wrong token is: %s\n",token);*/
         return received_command;
-        
-        
     }
 
 
@@ -118,21 +78,6 @@ command parse_command() {
 }
 
 
-
-/*
-command parse_command2(){
-    int c,i;
-    char user_input[MAX_COMMAND_LENGTH];
-    char *token;
-
-    i=0;
-    while (c=getchar()!='\n' && c != EOF){
-        printf("i:%d, c:%c\n",i,c+'0');
-        user_input[i++]=(c+'0');
-    }
-    printf("is:%s\n",user_input);
-}
-
 int parser_test() {
     command temp;
     temp = parse_command();
@@ -144,7 +89,3 @@ int parser_test() {
 
     return 0;
 }
-int main()
-{
-    parser_test();
-}*/
