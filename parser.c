@@ -6,23 +6,30 @@
 #include "parser.h"
 #include "mainaux.h"
 
-/*A command the recieves an input and checks if it is a command*/
+/*A command the recieves an input and checks if it is a restart command*/
 command check_if_restart(char *token){
     char restart_command[]="restart";
     command return_val;
     unsigned int i;
     
-    for(i=0;i<strlen(restart_command);i++){
-        if(token[i]!=restart_command[i]){
-            return_val.command_chosen=invalid_type;
-            return return_val;
+    if(strlen(token>7)){
+        for(i=0;i<strlen(restart_command);i++){
+            if(token[i]!=restart_command[i]){
+                return_val.command_chosen=invalid_type;
+                return return_val;
+            }
         }
+        return_val.command_chosen=restart_move;
+        return return_val;
     }
-    /*printf("it is!\n");*/
-    return_val.command_chosen=restart_move;
+    return_val.command_chosen=invalid_type;
     return return_val;
     
     
+}
+
+command check_if_set(char *token){
+
 }
 
 /* A command that receives an input and returns a command struct
