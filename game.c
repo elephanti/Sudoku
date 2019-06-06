@@ -23,6 +23,8 @@ int set(struct Cell **grid, int grid_height, int grid_width, int box_height, int
     }
 
     grid[row][col].value = value;
+    print_board(grid, GRID_WIDTH, GRID_HEIGHT, BOX_WIDTH, BOX_HEIGHT);
+
 
     if (is_game_won(grid, grid_height, grid_width)) {
         print_winning_message();

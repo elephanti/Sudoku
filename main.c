@@ -50,10 +50,8 @@ int main(int argc, char *argv[]) {
 
         if (user_input.command_chosen == set_move) {
             /* check for right row,col position */
-            if (set(board, GRID_HEIGHT, GRID_WIDTH, BOX_HEIGHT, BOX_WIDTH, user_input.params[0] - 1,
-                    user_input.params[1] - 1, user_input.params[2]) >= 0) {
-                print_board(board, GRID_WIDTH, GRID_HEIGHT, BOX_WIDTH, BOX_HEIGHT);
-            }
+            set(board, GRID_HEIGHT, GRID_WIDTH, BOX_HEIGHT, BOX_WIDTH, user_input.params[0] - 1,
+                    user_input.params[1] - 1, user_input.params[2]);
 
         } else if (user_input.command_chosen == hint_move) {
             hint(board_solution, user_input.params[0] - 1, user_input.params[1] - 1);
