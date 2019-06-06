@@ -39,9 +39,11 @@ int used_in_box(struct Cell **grid, int box_start_row, int box_start_col, int bo
    num to the given row,col location. */
 int is_valid(struct Cell **grid, int grid_height, int grid_width, int box_height, int box_width, int row, int col,
              int num) {
-    return !used_in_row(grid, grid_width, row, col, num) &&
-           !used_in_col(grid, grid_height, row, col, num) &&
-           !used_in_box(grid, row - row % box_height, col - col % box_width, box_height, box_width, row, col, num);
+    if (num != UNASSIGNED)
+        return !used_in_row(grid, grid_width, row, col, num) &&
+               !used_in_col(grid, grid_height, row, col, num) &&
+               !used_in_box(grid, row - row % box_height, col - col % box_width, box_height, box_width, row, col, num);
+    return TRUE;
 }
 
 int
@@ -79,6 +81,10 @@ int solve_grid_recursive(struct Cell **grid, int grid_height, int grid_width, in
     int num;
     int random_index;
     int num_of_values;
+<<<<<<< HEAD
+=======
+
+>>>>>>> 56e8b8ce0362d90df0ca8bc7d0c060f86feac0cc
     if (row == grid_height)
         return TRUE;
 

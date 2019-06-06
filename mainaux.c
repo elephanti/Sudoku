@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <malloc.h>
 #include "mainaux.h"
 #include <stdlib.h>
@@ -135,14 +136,22 @@ void empty_board(struct Cell **board_to_empty, int grid_height, int grid_width) 
     }
 }
 
-void get_cells_number_input(int* num_of_hints){
+int get_cells_number_input(int* num_of_hints){
     /* Scanning user input */
+    int result;
     printf(NUMBER_OF_CELLS_TO_FILL_MSG);
-    scanf("%d%*c", num_of_hints);
+    result = scanf("%d%*c", num_of_hints);
+
+    if (result == 0)
+        return result;
 
     while (*num_of_hints < 0 || *num_of_hints > 80) {
         printf(INVALID_NUMBER_OF_CELLS_TO_FILL);
         printf(NUMBER_OF_CELLS_TO_FILL_MSG);
-        scanf("%d%*c", num_of_hints);
+        result = scanf("%d%*c", num_of_hints);
+        if (result == 0)
+            return result;
     }
+
+    return 1;
 }
