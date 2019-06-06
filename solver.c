@@ -81,10 +81,6 @@ int solve_grid_recursive(struct Cell **grid, int grid_height, int grid_width, in
     int num;
     int random_index;
     int num_of_values;
-<<<<<<< HEAD
-=======
-
->>>>>>> 56e8b8ce0362d90df0ca8bc7d0c060f86feac0cc
     if (row == grid_height)
         return TRUE;
 

@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <malloc.h>
-#include "mainaux.h"
 #include <stdlib.h>
+#include "mainaux.h"
 
 void print_board(struct Cell **grid, int grid_height, int grid_width, int box_height, int box_width) {
     int i, j, k, line_length, boxes_amount;
@@ -141,7 +141,10 @@ int get_cells_number_input(int* num_of_hints){
     int result;
     printf(NUMBER_OF_CELLS_TO_FILL_MSG);
     result = scanf("%d%*c", num_of_hints);
-
+    if(result==EOF){
+        printf(EXIT_MSG);
+        exit(0);
+    }
     if (result == 0)
         return result;
 
