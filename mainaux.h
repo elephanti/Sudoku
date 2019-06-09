@@ -11,6 +11,7 @@
 #define TRUE 1
 #define FALSE 0
 
+#define DEFAULT_SEED 5
 #define WRONG_VALUE -1
 #define SUCCESS 1
 
@@ -27,6 +28,7 @@
 #define EXIT_MSG "Exiting...\n"
 #define VALIDATION_FAILED "Validation failed: board is unsolvable\n"
 #define VALIDATION_PASSED "Validation passed: board is solvable\n"
+#define FUNCTION_FAILED "Error: %s has failed\n"
 
 struct Cell {
     int value;
