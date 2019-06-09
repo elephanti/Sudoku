@@ -202,12 +202,14 @@ int solve_grid_recursive(struct Cell **grid, int grid_height, int grid_width, in
                     /* If we can go further right - then go there */
                     if (solve_grid_recursive(grid, grid_height, grid_width, box_height, box_width, row, col + 1)) {
                         /* Success! */
+                        free(values);
                         return TRUE;
                     }
                 } else {
                     /* End of the row - go to the next one */
                     if (solve_grid_recursive(grid, grid_height, grid_width, box_height, box_width, row + 1, 0)) {
                         /* Success! */
+                        free(values);
                         return TRUE;
                     }
                 }

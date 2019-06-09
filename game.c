@@ -100,6 +100,12 @@ int validate(struct Cell **grid, int grid_height, int grid_width, int box_height
 
     } else {
         /* No solution for the current board */
+        /* Free memory allocation for previous solution */
+        for (i = 0; i < grid_height; i++) {
+            free(new_solution[i]);
+        }
+        free(new_solution);
+
         print_validation_failed();
         return FALSE;
     }
