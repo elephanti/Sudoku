@@ -12,7 +12,7 @@ command check_if_restart(char *token){
     command return_val;
     unsigned int i;
     
-    if(strlen(token>7)){
+    if(strlen(token>6)){
         for(i=0;i<strlen(restart_command);i++){
             if(token[i]!=restart_command[i]){
                 return_val.command_chosen=invalid_type;
@@ -29,7 +29,21 @@ command check_if_restart(char *token){
 }
 
 command check_if_set(char *token){
+    int i;
+    char set_command[]="set";
+    command return_val;
 
+
+    if(strlen(token>3)){
+        for(i=0;i<strlen(set_command);i++){
+            if(token[i]!=set_command[i]){
+                return_val.command_chosen=invalid_type;
+                return return_val;
+            }
+        }
+        return_val.command_chosen=restart_move;
+        return return_val;
+    }
 }
 
 /* A command that receives an input and returns a command struct
