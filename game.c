@@ -84,7 +84,7 @@ int validate(struct Cell **grid, int grid_height, int grid_width, int box_height
 
     /* If board is solvable - update the solution */
 
-    if (solve_grid_recursive_deterministic(new_solution, grid_height, grid_width, box_height, box_width, 0, 0) ==
+    if (solve_grid_recursive_general(new_solution, grid_height, grid_width, box_height, box_width, 0, 0, DETERMINISTIC) ==
         TRUE) {
         /* Copy the found solution to the current solution */
         copy_board(new_solution, current_solution, grid_height, grid_width);

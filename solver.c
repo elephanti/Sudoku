@@ -228,6 +228,109 @@ int solve_grid_recursive(struct Cell **grid, int grid_height, int grid_width, in
     }
 }
 
+
+
+/**
+ * Solve a board game grid recursively
+ * @param grid The game board
+ * @param grid_height The board height
+ * @param grid_width The width of the board
+ * @param box_height The box height
+ * @param box_width The box width
+ * @param row The row of the cell to start solving from
+ * @param col The column of the cell to start solving from
+ * @param flag 1 randomly 2 deterministic
+ * @return 1 = Solved, 0 = No solution found
+ */
+int solve_grid_recursive_general(struct Cell **grid, int grid_height, int grid_width, int box_height, int box_width, int row,
+                         int col, int flag) {
+    int num;
+    int current_index;
+    int num_of_values;
+    if (row == grid_height)
+        return TRUE;
+
+    current_index = 0;
+    if (!is_empty(grid, row, col)) {
+        /* Current cell is not empty - skip it and try the next one */
+        if (col + 1 < grid_width) {
+            /* If we can go further right - then go there and solve from there */
+            return solve_grid_recursive_general(grid, grid_height, grid_width, box_height, box_width, row, col + 1, flag);
+        } else {
+            /* End of the row - go to the next one and try to solve from there */
+            return solve_grid_recursive_general(grid, grid_height, grid_width, box_height, box_width, row + 1, 0, flag);
+        }
+    } else {
+        /* Get all the values that are currently valid for the current cel */
+        int *values = (int *) malloc(9 * sizeof(int));
+        /*check if malloc has failed*/
+        if (!values) {
+            printf(FUNCTION_FAILED, "malloc");
+            exit(0);
+        }
+        num_of_values = find_valid_values(grid, grid_height, grid_width, box_height, box_width, row, col, values,
+                                          9);
+
+        while (num_of_values != 0) {
+            if (num_of_values == 1) {
+                if( flag == RANDOMLY){
+                    current_index = 0;
+                }
+            } else {
+                if(flag == RANDOMLY){
+                    /* Randomly choose a valid number to try */
+                    current_index = rand() % num_of_values;
+                }
+                
+
+            }
+
+            num = values[current_index];
+
+            /* Check if num is valid value for the current cell */
+            if (is_valid(grid, grid_height, grid_width, box_height, box_width, row, col, num)) {
+                /* Fill the cell with the proposed num */
+                grid[row][col].value = num;
+
+                if (col + 1 < grid_width) {
+                    /* If we can go further right - then go there */
+                    if (solve_grid_recursive_general(grid, grid_height, grid_width, box_height, box_width, row, col + 1, flag)) {
+                        /* Success! */
+                        free(values);
+                        return TRUE;
+                    }
+                } else {
+                    /* End of the row - go to the next one */
+                    if (solve_grid_recursive_general(grid, grid_height, grid_width, box_height, box_width, row + 1, 0, flag)) {
+                        /* Success! */
+                        free(values);
+                        return TRUE;
+                    }
+                }
+
+                /* No solution found with current num as value in current cell - backtrack */
+                grid[row][col].value = UNASSIGNED;
+                if(flag == RANDOMLY){
+                    /* Delete the number from possible values */
+                    delete_from_array(values, current_index, num_of_values);
+                    num_of_values--;
+                }else{
+                    current_index++;
+                    num_of_values--;
+                }
+                
+            }
+        }
+
+        /* No solution found for current board - return False (to trigger backtracking) */
+        free(values);
+        return FALSE;
+    }
+}
+
+
+
+
 /**
  * Solve a grid (non-deterministically)
  * @param grid The game board
@@ -238,7 +341,8 @@ int solve_grid_recursive(struct Cell **grid, int grid_height, int grid_width, in
  * @return 1 = Board was solved, 0 = No solution found
  */
 int solve_grid(struct Cell **grid, int grid_height, int grid_width, int box_height, int box_width) {
-    return solve_grid_recursive(grid, grid_height, grid_width, box_height, box_width, 0, 0);
+    /*return solve_grid_recursive(grid, grid_height, grid_width, box_height, box_width, 0, 0);*/
+    return solve_grid_recursive_general(grid, grid_height, grid_width, box_height, box_width, 0, 0, 1);
 }
 
 /**
@@ -371,6 +475,7 @@ int is_game_won(struct Cell **grid, int grid_height, int grid_width) {
 
     return TRUE;
 }
+
 
 
 int test() {
