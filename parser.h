@@ -16,7 +16,6 @@ typedef struct comm {
     int param_amount;
 } command;
 
-int equals(char *str1, char *str2);
 
 command parse_command();
 

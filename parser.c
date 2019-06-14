@@ -108,18 +108,3 @@ command parse_command() {
 
 }
 
-/**
- * Test the parser
- * @return 0 = Success
- */
-int parser_test() {
-    command temp;
-    temp = parse_command();
-    printf("type:%d \n", temp.command_chosen);
-    printf("param1:%d \n", temp.params[0]);
-    printf("param2:%d \n", temp.params[1]);
-    printf("param3:%d \n", temp.params[2]);
-
-
-    return 0;
-}
